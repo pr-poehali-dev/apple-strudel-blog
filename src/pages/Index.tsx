@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -10,6 +10,11 @@ const Index = () => {
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
   const [servings, setServings] = useState(8);
+  const [activeTimer, setActiveTimer] = useState<number | null>(null);
+  const [timeLeft, setTimeLeft] = useState<number>(0);
+  const [isRunning, setIsRunning] = useState(false);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,6 +39,50 @@ const Index = () => {
     return ingredient;
   };
 
+  useEffect(() => {
+    if (isRunning && timeLeft > 0) {
+      timerRef.current = setTimeout(() => {
+        setTimeLeft(timeLeft - 1);
+      }, 1000);
+    } else if (timeLeft === 0 && isRunning) {
+      setIsRunning(false);
+      if (audioRef.current) {
+        audioRef.current.play().catch(() => {});
+      }
+      if ('Notification' in window && Notification.permission === 'granted') {
+        new Notification('Таймер завершён!', {
+          body: `Этап "${steps[activeTimer!].title}" завершён`,
+          icon: '/favicon.ico'
+        });
+      }
+    }
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, [isRunning, timeLeft, activeTimer]);
+
+  const startTimer = (stepIndex: number, minutes: number) => {
+    if ('Notification' in window && Notification.permission === 'default') {
+      Notification.requestPermission();
+    }
+    setActiveTimer(stepIndex);
+    setTimeLeft(minutes * 60);
+    setIsRunning(true);
+  };
+
+  const stopTimer = () => {
+    setIsRunning(false);
+    setActiveTimer(null);
+    setTimeLeft(0);
+    if (timerRef.current) clearTimeout(timerRef.current);
+  };
+
+  const formatTime = (seconds: number): string => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+
   const recipe = {
     title: 'Классический Яблочный Штрудель',
     subtitle: 'Австрийский десерт с хрустящим тестом и ароматной начинкой',
@@ -50,11 +99,11 @@ const Index = () => {
   ];
 
   const steps = [
-    { title: 'Приготовление теста', time: '15 мин', description: 'Смешайте муку, соль, яйцо, воду и масло. Замесите эластичное тесто, накройте плёнкой и оставьте отдыхать на 30 минут при комнатной температуре.' },
-    { title: 'Подготовка начинки', time: '10 мин', description: 'Очистите яблоки, нарежьте тонкими дольками. Добавьте сахар, корицу, изюм и рубленые орехи. Перемешайте.' },
-    { title: 'Раскатка теста', time: '10 мин', description: 'На присыпанном мукой столе раскатайте тесто максимально тонко. Смажьте растопленным маслом и посыпьте сухарями.' },
-    { title: 'Формирование штруделя', time: '5 мин', description: 'Выложите начинку вдоль края теста. Аккуратно сверните рулет, используя полотенце. Переложите на противень швом вниз.' },
-    { title: 'Выпекание', time: '35 мин', description: 'Смажьте штрудель маслом. Выпекайте при 180°C до золотистой корочки. Остудите 10 минут перед нарезкой.' }
+    { title: 'Приготовление теста', time: '15 мин', minutes: 15, description: 'Смешайте муку, соль, яйцо, воду и масло. Замесите эластичное тесто, накройте плёнкой и оставьте отдыхать на 30 минут при комнатной температуре.' },
+    { title: 'Подготовка начинки', time: '10 мин', minutes: 10, description: 'Очистите яблоки, нарежьте тонкими дольками. Добавьте сахар, корицу, изюм и рубленые орехи. Перемешайте.' },
+    { title: 'Раскатка теста', time: '10 мин', minutes: 10, description: 'На присыпанном мукой столе раскатайте тесто максимально тонко. Смажьте растопленным маслом и посыпьте сухарями.' },
+    { title: 'Формирование штруделя', time: '5 мин', minutes: 5, description: 'Выложите начинку вдоль края теста. Аккуратно сверните рулет, используя полотенце. Переложите на противень швом вниз.' },
+    { title: 'Выпекание', time: '35 мин', minutes: 35, description: 'Смажьте штрудель маслом. Выпекайте при 180°C до золотистой корочки. Остудите 10 минут перед нарезкой.' }
   ];
 
   const chefTips = [
@@ -210,6 +259,36 @@ const Index = () => {
 
         <section className="mb-20">
           <h2 className="text-4xl font-bold mb-8">Пошаговое приготовление</h2>
+          
+          {activeTimer !== null && (
+            <Card className="mb-6 bg-primary text-white border-none">
+              <CardContent className="py-6">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <Icon name="Timer" size={32} />
+                    <div>
+                      <p className="text-sm opacity-90">Активный таймер</p>
+                      <p className="text-2xl font-bold">{steps[activeTimer].title}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <div className="text-4xl font-bold tabular-nums">
+                      {formatTime(timeLeft)}
+                    </div>
+                    <Button 
+                      variant="secondary" 
+                      size="sm"
+                      onClick={stopTimer}
+                    >
+                      <Icon name="X" size={16} className="mr-1" />
+                      Остановить
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
           <div className="space-y-8">
             {steps.map((step, idx) => (
               <div key={idx} className="flex gap-6">
@@ -219,9 +298,19 @@ const Index = () => {
                   </div>
                 </div>
                 <div className="flex-1">
-                  <div className="flex items-center gap-3 mb-2">
+                  <div className="flex items-center gap-3 mb-2 flex-wrap">
                     <h3 className="text-2xl font-semibold">{step.title}</h3>
                     <Badge variant="outline" className="text-xs">{step.time}</Badge>
+                    <Button 
+                      variant={activeTimer === idx ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => startTimer(idx, step.minutes)}
+                      disabled={activeTimer !== null && activeTimer !== idx}
+                      className="ml-auto"
+                    >
+                      <Icon name="Timer" size={16} className="mr-1" />
+                      {activeTimer === idx ? 'Таймер идёт' : 'Запустить таймер'}
+                    </Button>
                   </div>
                   <p className="text-gray-600 leading-relaxed">{step.description}</p>
                   {idx < steps.length - 1 && <Separator className="mt-8" />}
@@ -307,6 +396,8 @@ const Index = () => {
           </Card>
         </section>
       </div>
+
+      <audio ref={audioRef} src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBzbT6/fEhysFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBzbT6/fEhysFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBzbT6/fEhysFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBzbT6/fEhysFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBzbT6/fEhysFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBzbT6/fEhysFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBzbT6/fEhysFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBzbT6/fEhysFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBzbT6/fEhysFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBzbT6/fEhysFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBzbT6/fEhysFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBzbT6/fEhysFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBzbT6/fEhysFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBzbT6/fEhysFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBzbT6/fEhysFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBzbT6/fEhysFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBzbT6/fEhysFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBzbT6/fEhysFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBzbT6/fEhysFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBzbT6/fEhysFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBzbT6/fEhysFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBzbT6/fEhysFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBzbT6/fEhysFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBzbT6/fEhysFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBzbT6/fEhysFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBzbT6/fEhysFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBzbT6/fEhysFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBzbT6/fEhysFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBzbT6/fEhysFJHfH8N2QQAoUXrTp66hVFApGn+Dy" preload="auto" />
 
       <footer className="bg-gray-50 border-t border-gray-200 py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
