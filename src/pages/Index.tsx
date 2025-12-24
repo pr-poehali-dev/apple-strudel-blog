@@ -15,6 +15,7 @@ const Index = () => {
   const [timeLeft, setTimeLeft] = useState<number>(0);
   const [isRunning, setIsRunning] = useState(false);
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
+  const [showScrollTop, setShowScrollTop] = useState(false);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
@@ -62,6 +63,19 @@ const Index = () => {
       if (timerRef.current) clearTimeout(timerRef.current);
     };
   }, [isRunning, timeLeft, activeTimer]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowScrollTop(window.scrollY > 500);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   const startTimer = (stepIndex: number, minutes: number) => {
     if ('Notification' in window && Notification.permission === 'default') {
@@ -692,6 +706,17 @@ const Index = () => {
           <p className="text-center text-sm text-gray-500">© 2024 Вкусные Рецепты. Все права защищены.</p>
         </div>
       </footer>
+
+      {showScrollTop && (
+        <Button
+          onClick={scrollToTop}
+          size="lg"
+          className="fixed bottom-8 right-8 rounded-full w-14 h-14 shadow-lg bg-primary hover:bg-primary/90 text-white z-50 no-print"
+          aria-label="Наверх"
+        >
+          <Icon name="ArrowUp" size={24} />
+        </Button>
+      )}
     </div>
   );
 };
