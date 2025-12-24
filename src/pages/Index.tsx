@@ -41,6 +41,15 @@ const Index = () => {
     { title: 'Выпекание', time: '35 мин', description: 'Смажьте штрудель маслом. Выпекайте при 180°C до золотистой корочки. Остудите 10 минут перед нарезкой.' }
   ];
 
+  const chefTips = [
+    { icon: 'Lightbulb', title: 'Выбор яблок', text: 'Используйте кислые сорта — Антоновка, Гренни Смит или Симиренко. Они сохраняют форму при выпекании и не превращаются в кашу.' },
+    { icon: 'ThermometerSun', title: 'Температура теста', text: 'Все ингредиенты для теста должны быть комнатной температуры. Это ключ к эластичности теста и его способности тянуться.' },
+    { icon: 'Clock3', title: 'Отдых теста', text: 'Не пропускайте этап отдыха теста! За 30 минут клейковина расслабится, и тесто можно будет растянуть до прозрачности.' },
+    { icon: 'Droplets', title: 'Секрет хрустящей корочки', text: 'Обильно смазывайте слои теста растопленным маслом и посыпайте сухарями — они впитают лишнюю влагу из яблок.' },
+    { icon: 'Flame', title: 'Правильная подача', text: 'Подавайте штрудель тёплым с шариком ванильного мороженого или взбитыми сливками. Контраст температур — это волшебство!' },
+    { icon: 'Refrigerator', title: 'Хранение', text: 'Храните остывший штрудель в холодильнике до 3 дней. Перед подачей разогрейте в духовке 10 минут при 160°C.' }
+  ];
+
   const gallery = [
     { url: 'https://cdn.poehali.dev/projects/d96d6b12-d163-4b8a-a4d6-c8c1768ef193/files/ac032ffa-5cbd-40f9-83af-98a43e7fea40.jpg', caption: 'Готовый штрудель с золотистой корочкой' },
     { url: 'https://cdn.poehali.dev/projects/d96d6b12-d163-4b8a-a4d6-c8c1768ef193/files/dc22f049-3ab0-43b2-9137-e4f734530a8e.jpg', caption: 'Свежие ингредиенты для начинки' },
@@ -168,6 +177,29 @@ const Index = () => {
                   {idx < steps.length - 1 && <Separator className="mt-8" />}
                 </div>
               </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="mb-20">
+          <div className="text-center mb-12">
+            <Badge className="mb-4 bg-primary text-white">Советы от шеф-повара</Badge>
+            <h2 className="text-4xl font-bold mb-4">Секреты идеального штруделя</h2>
+            <p className="text-gray-600 max-w-2xl mx-auto">
+              Профессиональные рекомендации для безупречного результата
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {chefTips.map((tip, idx) => (
+              <Card key={idx} className="hover:shadow-lg transition-shadow duration-300">
+                <CardContent className="pt-6">
+                  <div className="w-12 h-12 rounded-full bg-secondary flex items-center justify-center mb-4">
+                    <Icon name={tip.icon} size={24} className="text-primary" />
+                  </div>
+                  <h3 className="text-lg font-semibold mb-2">{tip.title}</h3>
+                  <p className="text-sm text-gray-600 leading-relaxed">{tip.text}</p>
+                </CardContent>
+              </Card>
             ))}
           </div>
         </section>
