@@ -154,6 +154,33 @@ const Index = () => {
 
   const averageRating = (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1);
 
+  const similarRecipes = [
+    {
+      title: 'Венский Захер',
+      description: 'Классический шоколадный торт с абрикосовым джемом',
+      image: 'https://cdn.poehali.dev/projects/d96d6b12-d163-4b8a-a4d6-c8c1768ef193/files/ac032ffa-5cbd-40f9-83af-98a43e7fea40.jpg',
+      time: '90 минут',
+      difficulty: 'Сложная',
+      rating: 4.9
+    },
+    {
+      title: 'Тирамису',
+      description: 'Нежный итальянский десерт с кофе и маскарпоне',
+      image: 'https://cdn.poehali.dev/projects/d96d6b12-d163-4b8a-a4d6-c8c1768ef193/files/dc22f049-3ab0-43b2-9137-e4f734530a8e.jpg',
+      time: '30 минут',
+      difficulty: 'Лёгкая',
+      rating: 4.7
+    },
+    {
+      title: 'Панна-котта',
+      description: 'Итальянский молочный десерт с ягодным соусом',
+      image: 'https://cdn.poehali.dev/projects/d96d6b12-d163-4b8a-a4d6-c8c1768ef193/files/daf4bc3f-3391-4556-9d60-bd2d5acbc984.jpg',
+      time: '20 минут',
+      difficulty: 'Лёгкая',
+      rating: 4.8
+    }
+  ];
+
   return (
     <div className="min-h-screen bg-white">
       <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-200">
@@ -461,6 +488,62 @@ const Index = () => {
               <Icon name="MessageSquarePlus" size={20} className="mr-2" />
               Оставить свой отзыв
             </Button>
+          </div>
+        </section>
+
+        <div className="mb-8 p-6 bg-gray-50 rounded-lg border border-gray-200 no-print">
+          <p className="text-sm text-center text-muted-foreground mb-2">Реклама</p>
+          <div className="h-24 bg-white border-2 border-dashed border-gray-300 rounded flex items-center justify-center">
+            <p className="text-gray-400">Яндекс.Директ / Google Ads</p>
+          </div>
+        </div>
+
+        <section id="similar" className="mb-20">
+          <div className="text-center mb-12">
+            <Badge className="mb-4 bg-primary text-white">Вам может понравиться</Badge>
+            <h2 className="text-4xl font-bold mb-4">Похожие рецепты</h2>
+            <p className="text-gray-600 max-w-2xl mx-auto">
+              Другие популярные десерты европейской кухни
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {similarRecipes.map((recipe, idx) => (
+              <Card key={idx} className="group cursor-pointer hover:shadow-xl transition-all duration-300 overflow-hidden">
+                <div className="relative h-48 overflow-hidden">
+                  <img 
+                    src={recipe.image} 
+                    alt={recipe.title}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  />
+                  <div className="absolute top-3 right-3 bg-white rounded-full px-3 py-1 flex items-center gap-1 shadow-md">
+                    <Icon name="Star" size={14} className="fill-primary text-primary" />
+                    <span className="text-sm font-semibold">{recipe.rating}</span>
+                  </div>
+                </div>
+                <CardContent className="pt-6">
+                  <h3 className="text-2xl font-bold mb-2 group-hover:text-primary transition-colors">
+                    {recipe.title}
+                  </h3>
+                  <p className="text-gray-600 mb-4 text-sm leading-relaxed">
+                    {recipe.description}
+                  </p>
+                  <div className="flex items-center justify-between text-sm">
+                    <div className="flex items-center gap-1 text-gray-500">
+                      <Icon name="Clock" size={16} />
+                      <span>{recipe.time}</span>
+                    </div>
+                    <Badge variant="outline" className="text-xs">
+                      {recipe.difficulty}
+                    </Badge>
+                  </div>
+                  <Button className="w-full mt-4 bg-primary hover:bg-primary/90 text-white">
+                    Смотреть рецепт
+                    <Icon name="ArrowRight" size={16} className="ml-2" />
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </section>
 
