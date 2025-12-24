@@ -100,6 +100,24 @@ const Index = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const shareRecipe = (platform: string) => {
+    const url = window.location.href;
+    const title = 'Классический Яблочный Штрудель - Лучший Рецепт';
+    const text = 'Попробуйте этот потрясающий рецепт яблочного штруделя!';
+
+    const shareUrls: { [key: string]: string } = {
+      vk: `https://vk.com/share.php?url=${encodeURIComponent(url)}&title=${encodeURIComponent(title)}`,
+      telegram: `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`,
+      whatsapp: `https://wa.me/?text=${encodeURIComponent(text + ' ' + url)}`,
+      facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
+      twitter: `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`
+    };
+
+    if (shareUrls[platform]) {
+      window.open(shareUrls[platform], '_blank', 'width=600,height=400');
+    }
+  };
+
   const startTimer = (stepIndex: number, minutes: number) => {
     if ('Notification' in window && Notification.permission === 'default') {
       Notification.requestPermission();
@@ -337,6 +355,67 @@ const Index = () => {
             </div>
           </div>
         )}
+
+        <Card className="mb-8 border-2 border-primary/20">
+          <CardContent className="pt-6 pb-6">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <Icon name="Share2" size={24} className="text-primary" />
+                <div>
+                  <h3 className="font-semibold text-lg">Поделиться рецептом</h3>
+                  <p className="text-sm text-gray-600">Расскажите друзьям о рецепте</p>
+                </div>
+              </div>
+              <div className="flex gap-2 flex-wrap justify-center">
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => shareRecipe('vk')}
+                  className="hover:bg-blue-50"
+                >
+                  <span className="text-lg mr-1">🔵</span>
+                  ВКонтакте
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => shareRecipe('telegram')}
+                  className="hover:bg-blue-50"
+                >
+                  <span className="text-lg mr-1">✈️</span>
+                  Telegram
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => shareRecipe('whatsapp')}
+                  className="hover:bg-green-50"
+                >
+                  <span className="text-lg mr-1">💬</span>
+                  WhatsApp
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => shareRecipe('facebook')}
+                  className="hover:bg-blue-50"
+                >
+                  <span className="text-lg mr-1">📘</span>
+                  Facebook
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => shareRecipe('twitter')}
+                  className="hover:bg-blue-50"
+                >
+                  <span className="text-lg mr-1">🐦</span>
+                  Twitter
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
 
         <div className="mb-8 p-6 bg-gray-50 rounded-lg border border-gray-200 no-print">
           <p className="text-sm text-center text-muted-foreground mb-2">Реклама</p>
