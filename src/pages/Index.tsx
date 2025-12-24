@@ -345,6 +345,46 @@ const Index = () => {
               Распечатать рецепт
             </Button>
           </div>
+
+          {/* Кнопки мессенджеров */}
+          <div className="flex flex-wrap gap-3 justify-center mt-6">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                const text = encodeURIComponent(`Попробуй этот рецепт: ${recipe.title}\n\n${window.location.href}`);
+                window.open(`https://wa.me/?text=${text}`, '_blank');
+              }}
+              className="bg-green-500 hover:bg-green-600 text-white border-0"
+            >
+              <Icon name="MessageCircle" size={18} className="mr-2" />
+              WhatsApp
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                const text = encodeURIComponent(`Попробуй этот рецепт: ${recipe.title}\n\n${window.location.href}`);
+                window.open(`https://t.me/share/url?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(`Попробуй этот рецепт: ${recipe.title}`)}`, '_blank');
+              }}
+              className="bg-blue-500 hover:bg-blue-600 text-white border-0"
+            >
+              <Icon name="Send" size={18} className="mr-2" />
+              Telegram
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                const text = encodeURIComponent(`Попробуй этот рецепт: ${recipe.title}`);
+                window.open(`https://vk.com/share.php?url=${encodeURIComponent(window.location.href)}&title=${text}`, '_blank');
+              }}
+              className="bg-blue-600 hover:bg-blue-700 text-white border-0"
+            >
+              <Icon name="Share2" size={18} className="mr-2" />
+              ВКонтакте
+            </Button>
+          </div>
         </div>
       </section>
 
