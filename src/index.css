@@ -104,3 +104,65 @@
     font-family: "Cormorant Garamond", serif;
   }
 }
+
+@media print {
+  @page {
+    margin: 1.5cm;
+    size: A4;
+  }
+
+  body {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  nav,
+  footer,
+  .no-print {
+    display: none !important;
+  }
+
+  section {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  h1 {
+    font-size: 2rem !important;
+  }
+
+  h2 {
+    font-size: 1.5rem !important;
+    margin-top: 1rem !important;
+    page-break-after: avoid;
+  }
+
+  h3 {
+    font-size: 1.25rem !important;
+  }
+
+  .hero-section {
+    height: auto !important;
+    padding: 2rem 0 !important;
+  }
+
+  .hero-section img {
+    max-height: 15cm !important;
+  }
+
+  button,
+  .timer-widget {
+    display: none !important;
+  }
+
+  .card {
+    border: 1px solid #e5e7eb !important;
+    box-shadow: none !important;
+    page-break-inside: avoid;
+  }
+
+  .space-y-8 > div,
+  .space-y-6 > div {
+    margin-bottom: 1rem !important;
+  }
+}

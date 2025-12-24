@@ -136,7 +136,7 @@ const Index = () => {
         </div>
       </nav>
 
-      <section className="relative h-[70vh] flex items-center justify-center overflow-hidden">
+      <section className="hero-section relative h-[70vh] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0">
           <img 
             src="https://cdn.poehali.dev/projects/d96d6b12-d163-4b8a-a4d6-c8c1768ef193/files/ac032ffa-5cbd-40f9-83af-98a43e7fea40.jpg" 
@@ -149,10 +149,16 @@ const Index = () => {
           <Badge className="mb-4 bg-primary text-white">Лучший рецепт недели</Badge>
           <h1 className="text-5xl md:text-7xl font-bold mb-4 text-gray-900">{recipe.title}</h1>
           <p className="text-xl text-gray-700 mb-8">{recipe.subtitle}</p>
-          <Button size="lg" className="bg-primary hover:bg-primary/90 text-white">
-            <Icon name="ChefHat" size={20} className="mr-2" />
-            Начать готовить
-          </Button>
+          <div className="flex gap-4 justify-center">
+            <Button size="lg" className="bg-primary hover:bg-primary/90 text-white">
+              <Icon name="ChefHat" size={20} className="mr-2" />
+              Начать готовить
+            </Button>
+            <Button size="lg" variant="outline" onClick={() => window.print()}>
+              <Icon name="Printer" size={20} className="mr-2" />
+              Распечатать рецепт
+            </Button>
+          </div>
         </div>
       </section>
 
@@ -188,7 +194,7 @@ const Index = () => {
           </Card>
         </div>
 
-        <div className="mb-8 p-6 bg-gray-50 rounded-lg border border-gray-200">
+        <div className="mb-8 p-6 bg-gray-50 rounded-lg border border-gray-200 no-print">
           <p className="text-sm text-center text-muted-foreground mb-2">Реклама</p>
           <div className="h-24 bg-white border-2 border-dashed border-gray-300 rounded flex items-center justify-center">
             <p className="text-gray-400">Яндекс.Директ / Google Ads</p>
@@ -250,7 +256,7 @@ const Index = () => {
           </div>
         </section>
 
-        <div className="mb-8 p-6 bg-gray-50 rounded-lg border border-gray-200">
+        <div className="mb-8 p-6 bg-gray-50 rounded-lg border border-gray-200 no-print">
           <p className="text-sm text-center text-muted-foreground mb-2">Реклама</p>
           <div className="h-24 bg-white border-2 border-dashed border-gray-300 rounded flex items-center justify-center">
             <p className="text-gray-400">Яндекс.Директ / Google Ads</p>
@@ -261,7 +267,7 @@ const Index = () => {
           <h2 className="text-4xl font-bold mb-8">Пошаговое приготовление</h2>
           
           {activeTimer !== null && (
-            <Card className="mb-6 bg-primary text-white border-none">
+            <Card className="timer-widget mb-6 bg-primary text-white border-none">
               <CardContent className="py-6">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4">
@@ -359,7 +365,7 @@ const Index = () => {
           </div>
         </section>
 
-        <div className="mb-8 p-6 bg-gray-50 rounded-lg border border-gray-200">
+        <div className="mb-8 p-6 bg-gray-50 rounded-lg border border-gray-200 no-print">
           <p className="text-sm text-center text-muted-foreground mb-2">Реклама</p>
           <div className="h-24 bg-white border-2 border-dashed border-gray-300 rounded flex items-center justify-center">
             <p className="text-gray-400">Яндекс.Директ / Google Ads</p>
