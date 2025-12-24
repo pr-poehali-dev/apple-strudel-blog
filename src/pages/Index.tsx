@@ -16,6 +16,7 @@ const Index = () => {
   const [isRunning, setIsRunning] = useState(false);
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
   const [showScrollTop, setShowScrollTop] = useState(false);
+  const [isFavorite, setIsFavorite] = useState(false);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
@@ -72,6 +73,28 @@ const Index = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  useEffect(() => {
+    const favorites = localStorage.getItem('favoriteRecipes');
+    if (favorites) {
+      const favList = JSON.parse(favorites);
+      setIsFavorite(favList.includes('apple-strudel'));
+    }
+  }, []);
+
+  const toggleFavorite = () => {
+    const favorites = localStorage.getItem('favoriteRecipes');
+    let favList: string[] = favorites ? JSON.parse(favorites) : [];
+    
+    if (isFavorite) {
+      favList = favList.filter(id => id !== 'apple-strudel');
+    } else {
+      favList.push('apple-strudel');
+    }
+    
+    localStorage.setItem('favoriteRecipes', JSON.stringify(favList));
+    setIsFavorite(!isFavorite);
+  };
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -252,10 +275,19 @@ const Index = () => {
           <Badge className="mb-4 bg-primary text-white">Лучший рецепт недели</Badge>
           <h1 className="text-5xl md:text-7xl font-bold mb-4 text-gray-900">{recipe.title}</h1>
           <p className="text-xl text-gray-700 mb-8">{recipe.subtitle}</p>
-          <div className="flex gap-4 justify-center">
+          <div className="flex gap-4 justify-center flex-wrap">
             <Button size="lg" className="bg-primary hover:bg-primary/90 text-white">
               <Icon name="ChefHat" size={20} className="mr-2" />
               Начать готовить
+            </Button>
+            <Button 
+              size="lg" 
+              variant={isFavorite ? "default" : "outline"}
+              onClick={toggleFavorite}
+              className={isFavorite ? "bg-red-500 hover:bg-red-600 text-white" : ""}
+            >
+              <Icon name={isFavorite ? "Heart" : "Heart"} size={20} className={`mr-2 ${isFavorite ? "fill-white" : ""}`} />
+              {isFavorite ? "В избранном" : "В избранное"}
             </Button>
             <Button size="lg" variant="outline" onClick={() => window.print()}>
               <Icon name="Printer" size={20} className="mr-2" />
@@ -296,6 +328,15 @@ const Index = () => {
             </CardContent>
           </Card>
         </div>
+
+        {isFavorite && (
+          <div className="mb-8 p-4 bg-red-50 border-2 border-red-200 rounded-lg">
+            <div className="flex items-center justify-center gap-2 text-red-700">
+              <Icon name="Heart" size={20} className="fill-red-500 text-red-500" />
+              <p className="font-semibold">Рецепт добавлен в избранное</p>
+            </div>
+          </div>
+        )}
 
         <div className="mb-8 p-6 bg-gray-50 rounded-lg border border-gray-200 no-print">
           <p className="text-sm text-center text-muted-foreground mb-2">Реклама</p>
