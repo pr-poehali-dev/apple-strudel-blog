@@ -9,6 +9,7 @@ import Icon from '@/components/ui/icon';
 const Index = () => {
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
+  const [servings, setServings] = useState(8);
 
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
@@ -16,6 +17,21 @@ const Index = () => {
       setSubscribed(true);
       setTimeout(() => setSubscribed(false), 3000);
     }
+  };
+
+  const baseServings = 8;
+  const multiplier = servings / baseServings;
+
+  const scaleIngredient = (ingredient: string): string => {
+    const match = ingredient.match(/^(\d+(?:\.\d+)?)\s*([а-яА-Я\s.]+)\s+(.+)$/);
+    if (match) {
+      const amount = parseFloat(match[1]);
+      const unit = match[2];
+      const name = match[3];
+      const scaled = Math.round(amount * multiplier * 10) / 10;
+      return `${scaled} ${unit} ${name}`;
+    }
+    return ingredient;
   };
 
   const recipe = {
@@ -131,7 +147,41 @@ const Index = () => {
         </div>
 
         <section id="recipe" className="mb-20">
-          <h2 className="text-4xl font-bold mb-8">Ингредиенты</h2>
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
+            <h2 className="text-4xl font-bold mb-4 md:mb-0">Ингредиенты</h2>
+            <Card className="bg-secondary border-primary">
+              <CardContent className="py-4 px-6">
+                <div className="flex items-center gap-4">
+                  <label className="font-semibold text-sm whitespace-nowrap">Количество порций:</label>
+                  <div className="flex items-center gap-2">
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => setServings(Math.max(2, servings - 2))}
+                      disabled={servings <= 2}
+                    >
+                      <Icon name="Minus" size={16} />
+                    </Button>
+                    <Input 
+                      type="number" 
+                      value={servings} 
+                      onChange={(e) => setServings(Math.max(2, parseInt(e.target.value) || 2))}
+                      className="w-16 text-center font-bold"
+                      min="2"
+                    />
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => setServings(Math.min(20, servings + 2))}
+                      disabled={servings >= 20}
+                    >
+                      <Icon name="Plus" size={16} />
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
           <div className="space-y-6">
             {ingredients.map((group, idx) => (
               <Card key={idx}>
@@ -141,7 +191,7 @@ const Index = () => {
                     {group.items.map((item, i) => (
                       <li key={i} className="flex items-start">
                         <Icon name="Check" size={20} className="mr-3 text-primary mt-0.5 flex-shrink-0" />
-                        <span>{item}</span>
+                        <span>{scaleIngredient(item)}</span>
                       </li>
                     ))}
                   </ul>
