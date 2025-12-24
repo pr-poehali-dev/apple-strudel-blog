@@ -4,6 +4,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import Icon from '@/components/ui/icon';
 
 const Index = () => {
@@ -13,6 +14,7 @@ const Index = () => {
   const [activeTimer, setActiveTimer] = useState<number | null>(null);
   const [timeLeft, setTimeLeft] = useState<number>(0);
   const [isRunning, setIsRunning] = useState(false);
+  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
@@ -178,6 +180,33 @@ const Index = () => {
       time: '20 минут',
       difficulty: 'Лёгкая',
       rating: 4.8
+    }
+  ];
+
+  const faq = [
+    {
+      question: 'Почему тесто рвется при растягивании?',
+      answer: 'Основные причины: недостаточный отдых теста (нужно минимум 30 минут), холодные ингредиенты, мало жидкости в тесте. Убедитесь, что все продукты комнатной температуры и дайте тесту полностью расслабиться под пленкой.'
+    },
+    {
+      question: 'Можно ли заменить яблоки другими фруктами?',
+      answer: 'Да! Отлично подходят груши, вишня, сливы или ягоды. Главное — используйте не слишком сочные фрукты, иначе тесто размокнет. Груши лучше выбирать твердые, вишню — без косточек и слить лишний сок.'
+    },
+    {
+      question: 'Что делать, если штрудель разваливается при нарезке?',
+      answer: 'Обязательно дайте штруделю остыть минимум 10-15 минут после выпекания. Режьте острым ножом пилящими движениями, а не давящими. Горячий штрудель всегда разваливается — это нормально.'
+    },
+    {
+      question: 'Можно ли приготовить штрудель заранее?',
+      answer: 'Да, штрудель можно испечь за 1-2 дня. Храните в холодильнике в контейнере. Перед подачей разогрейте в духовке при 160°C около 10 минут — корочка снова станет хрустящей.'
+    },
+    {
+      question: 'Чем заменить панировочные сухари?',
+      answer: 'Можно использовать измельченное печенье (например, Мария), молотые орехи или кокосовую стружку. Главная функция сухарей — впитывать влагу из начинки, поэтому любой сухой компонент подойдет.'
+    },
+    {
+      question: 'Можно ли заморозить готовый штрудель?',
+      answer: 'Да, остывший штрудель можно заморозить на срок до 2 месяцев. Размораживайте в холодильнике, затем разогревайте в духовке 15-20 минут при 160°C для восстановления текстуры.'
     }
   ];
 
@@ -543,6 +572,54 @@ const Index = () => {
                   </Button>
                 </CardContent>
               </Card>
+            ))}
+          </div>
+        </section>
+
+        <div className="mb-8 p-6 bg-gray-50 rounded-lg border border-gray-200 no-print">
+          <p className="text-sm text-center text-muted-foreground mb-2">Реклама</p>
+          <div className="h-24 bg-white border-2 border-dashed border-gray-300 rounded flex items-center justify-center">
+            <p className="text-gray-400">Яндекс.Директ / Google Ads</p>
+          </div>
+        </div>
+
+        <section id="faq" className="mb-20">
+          <div className="text-center mb-12">
+            <Badge className="mb-4 bg-primary text-white">Помощь</Badge>
+            <h2 className="text-4xl font-bold mb-4">Частые вопросы</h2>
+            <p className="text-gray-600 max-w-2xl mx-auto">
+              Ответы на самые популярные вопросы о приготовлении штруделя
+            </p>
+          </div>
+
+          <div className="max-w-3xl mx-auto space-y-4">
+            {faq.map((item, idx) => (
+              <Collapsible
+                key={idx}
+                open={openFaqIndex === idx}
+                onOpenChange={() => setOpenFaqIndex(openFaqIndex === idx ? null : idx)}
+              >
+                <Card className="overflow-hidden border-2 hover:border-primary/50 transition-colors">
+                  <CollapsibleTrigger className="w-full">
+                    <CardContent className="pt-6 pb-6">
+                      <div className="flex items-center justify-between gap-4">
+                        <h3 className="text-lg font-semibold text-left">{item.question}</h3>
+                        <Icon 
+                          name={openFaqIndex === idx ? "ChevronUp" : "ChevronDown"} 
+                          size={24} 
+                          className="text-primary flex-shrink-0"
+                        />
+                      </div>
+                    </CardContent>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent>
+                    <CardContent className="pt-0 pb-6">
+                      <Separator className="mb-4" />
+                      <p className="text-gray-700 leading-relaxed">{item.answer}</p>
+                    </CardContent>
+                  </CollapsibleContent>
+                </Card>
+              </Collapsible>
             ))}
           </div>
         </section>
