@@ -121,6 +121,39 @@ const Index = () => {
     { url: 'https://cdn.poehali.dev/projects/d96d6b12-d163-4b8a-a4d6-c8c1768ef193/files/daf4bc3f-3391-4556-9d60-bd2d5acbc984.jpg', caption: 'Идеальная подача с мороженым' }
   ];
 
+  const reviews = [
+    { 
+      name: 'Анна Соколова', 
+      rating: 5, 
+      date: '15 декабря 2024', 
+      avatar: '👩🏻‍🦰',
+      text: 'Потрясающий рецепт! Получилось с первого раза. Тесто действительно растягивается до прозрачности, а корочка вышла хрустящей. Вся семья в восторге!' 
+    },
+    { 
+      name: 'Дмитрий Петров', 
+      rating: 5, 
+      date: '12 декабря 2024', 
+      avatar: '👨🏻',
+      text: 'Готовил по этому рецепту на день рождения жены. Гости просили добавки! Особенно помогли советы шеф-повара про яблоки и температуру.' 
+    },
+    { 
+      name: 'Елена Морозова', 
+      rating: 4, 
+      date: '8 декабря 2024', 
+      avatar: '👩🏼',
+      text: 'Очень вкусно, но с первого раза тесто немного порвалось при раскатке. Во второй раз учла все нюансы — получилось идеально!' 
+    },
+    { 
+      name: 'Сергей Иванов', 
+      rating: 5, 
+      date: '3 декабря 2024', 
+      avatar: '👨🏼‍🦱',
+      text: 'Лучший штрудель, что я пробовал! Таймер для этапов — гениальная идея, ничего не пропустишь. Спасибо за подробный рецепт!' 
+    }
+  ];
+
+  const averageRating = (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1);
+
   return (
     <div className="min-h-screen bg-white">
       <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-200">
@@ -362,6 +395,72 @@ const Index = () => {
                 <p className="mt-2 text-sm text-center text-gray-600">{image.caption}</p>
               </div>
             ))}
+          </div>
+        </section>
+
+        <div className="mb-8 p-6 bg-gray-50 rounded-lg border border-gray-200 no-print">
+          <p className="text-sm text-center text-muted-foreground mb-2">Реклама</p>
+          <div className="h-24 bg-white border-2 border-dashed border-gray-300 rounded flex items-center justify-center">
+            <p className="text-gray-400">Яндекс.Директ / Google Ads</p>
+          </div>
+        </div>
+
+        <section id="reviews" className="mb-20">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold mb-4">Отзывы о рецепте</h2>
+            <div className="flex items-center justify-center gap-2 mb-2">
+              <div className="flex gap-1">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <Icon 
+                    key={star} 
+                    name="Star" 
+                    size={24} 
+                    className={star <= parseFloat(averageRating) ? "fill-primary text-primary" : "text-gray-300"}
+                  />
+                ))}
+              </div>
+              <span className="text-2xl font-bold">{averageRating}</span>
+              <span className="text-gray-600">из 5</span>
+            </div>
+            <p className="text-gray-600">На основе {reviews.length} отзывов</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {reviews.map((review, idx) => (
+              <Card key={idx} className="hover:shadow-md transition-shadow">
+                <CardContent className="pt-6">
+                  <div className="flex items-start gap-4 mb-4">
+                    <div className="text-4xl">{review.avatar}</div>
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between mb-1">
+                        <h3 className="font-semibold text-lg">{review.name}</h3>
+                      </div>
+                      <div className="flex items-center gap-2 mb-2">
+                        <div className="flex gap-0.5">
+                          {[1, 2, 3, 4, 5].map((star) => (
+                            <Icon 
+                              key={star} 
+                              name="Star" 
+                              size={16} 
+                              className={star <= review.rating ? "fill-primary text-primary" : "text-gray-300"}
+                            />
+                          ))}
+                        </div>
+                        <span className="text-xs text-gray-500">{review.date}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <p className="text-gray-700 leading-relaxed">{review.text}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          <div className="mt-8 text-center">
+            <Button variant="outline" size="lg">
+              <Icon name="MessageSquarePlus" size={20} className="mr-2" />
+              Оставить свой отзыв
+            </Button>
           </div>
         </section>
 
