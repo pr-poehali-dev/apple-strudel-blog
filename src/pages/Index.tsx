@@ -889,7 +889,7 @@ const Index = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
             <div>
-              <h3 className="font-bold mb-4">Вкусные Рецепты</h3>
+              <h3 className="font-bold mb-4">vkusrecepty.ru</h3>
               <p className="text-sm text-gray-600">Лучшие кулинарные рецепты со всего мира</p>
             </div>
             <div>
@@ -910,7 +910,7 @@ const Index = () => {
             </div>
           </div>
           <Separator className="mb-8" />
-          <p className="text-center text-sm text-gray-500">© 2024 Вкусные Рецепты. Все права защищены.</p>
+          <p className="text-center text-sm text-gray-500">© 2025 vkusrecepty.ru Все права защищены</p>
         </div>
       </footer>
 
