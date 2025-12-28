@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -303,11 +304,13 @@ const Index = () => {
       <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <h1 className="text-2xl font-bold tracking-tight">vkusrecepty.ru</h1>
+            <Link to="/">
+              <h1 className="text-2xl font-bold tracking-tight">vkusrecepty.ru</h1>
+            </Link>
             <div className="flex gap-6">
               <a href="#recipe" className="text-sm hover:text-primary transition-colors">Рецепты</a>
-              <a href="#gallery" className="text-sm hover:text-primary transition-colors">Галерея</a>
-              <a href="#subscribe" className="text-sm hover:text-primary transition-colors">Подписка</a>
+              <Link to="/about" className="text-sm hover:text-primary transition-colors">О сайте</Link>
+              <Link to="/contacts" className="text-sm hover:text-primary transition-colors">Контакты</Link>
             </div>
           </div>
         </div>
@@ -896,8 +899,8 @@ const Index = () => {
               <h4 className="font-semibold mb-4">Разделы</h4>
               <ul className="space-y-2 text-sm text-gray-600">
                 <li><a href="#recipe" className="hover:text-primary transition-colors">Рецепты</a></li>
-                <li><a href="#gallery" className="hover:text-primary transition-colors">Галерея</a></li>
-                <li><a href="#subscribe" className="hover:text-primary transition-colors">Подписка</a></li>
+                <li><Link to="/about" className="hover:text-primary transition-colors">О сайте</Link></li>
+                <li><Link to="/contacts" className="hover:text-primary transition-colors">Контакты</Link></li>
               </ul>
             </div>
             <div>
